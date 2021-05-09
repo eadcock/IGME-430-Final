@@ -2,9 +2,9 @@ const path = require('path');
 
 module.exports = {
   target: 'node',
-  entry: ['/client/app/maker.js', '/client/helper/helper.js'],
+  entry: ['/client/helper/helper.js', '/client/premium/premium.js'],
   output: {
-    filename: 'bundle.js',
+    filename: 'premiumBundle.js',
     path: path.resolve(__dirname, 'hosted'),
   },
   module: {

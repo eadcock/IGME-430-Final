@@ -33,14 +33,12 @@ const AccountSchema = new mongoose.Schema({
   },
 });
 
-AccountSchema.statics.toAPI = (doc) => {
-  return {
-    // _id is built into your mongo document and is guaranteed to be unique
-    username: doc.username,
-    premium: doc.premium,
-    _id: doc._id,
-  };
-};
+AccountSchema.statics.toAPI = (doc) => ({
+  // _id is built into your mongo document and is guaranteed to be unique
+  username: doc.username,
+  premium: doc.premium,
+  _id: doc._id,
+});
 
 const validatePassword = (doc, password, callback) => {
   const pass = doc.password;

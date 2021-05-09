@@ -1,16 +1,21 @@
+const helper = require('./../helper/helper.js');
+
 const handleLogin = (e) => {
   e.preventDefault();
 
   $('#noteMessage').hide();
 
   if($('#user').val() == '' || $('#pass').val() == '') {
-    handleError("Username or password is empty");
+    helper.handleError("Username or password is empty");
     return false;
   }
 
   console.log($('input[name=_csrf]').val());
 
-  sendAjax('POST', $('#loginForm').attr('action'), $('#loginForm').serialize(), redirect);
+  helper.sendAjax('POST', $('#loginForm').attr('action'), $('#loginForm').serialize(), (res) => {
+    helper.fetchAccount(() => {});
+    helper.redirect(res);
+  });
 
   return false;
 };
@@ -21,16 +26,16 @@ const handleSignup = (e) => {
   $('#noteMessage').hide();
 
   if($('#user').val() == '' || $('#pass').val() == '' || $('#pass2').val() == '') {
-    handleError('All fields are required');
+    helper.handleError('All fields are required');
     return false;
   }
 
   if($('#pass').val() !== $('#pass2').val()) {
-    handleError('Passwords do not match');
+    helper.handleError('Passwords do not match');
     return false;
   }
 
-  sendAjax('POST', $('#signupForm').attr('action'), $('#signupForm').serialize(), redirect);
+  helper.sendAjax('POST', $('#signupForm').attr('action'), $('#signupForm').serialize(), helper.redirect);
 
   return false;
 };
@@ -109,7 +114,7 @@ const setup = (csrf) => {
 }
 
 const getToken = () => {
-  sendAjax('GET', '/getToken', null, (result) => {
+  helper.sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);
   });
 };

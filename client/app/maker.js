@@ -3,6 +3,8 @@ let helper = require('./../helper/helper.js');
 
 let showingCreateForm = false;
 
+let cacheAccount = {};
+
 const handleNote = (e) => {
   e.preventDefault();
 
@@ -124,12 +126,14 @@ const NoteList = (props) => {
     );
   });
 
-  if(noteNodes.length < 5) {
-    noteNodes.push(<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>);
-  } else {
-    for(let i = 1; i < noteNodes.length; i++) {
-      if(i % 5 === 0) {
-        noteNodes.splice(i, 0, (<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>));
+  if(!props.user.account.premium) {
+    if(noteNodes.length < 5) {
+      noteNodes.push(<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>);
+    } else {
+      for(let i = 1; i < noteNodes.length; i++) {
+        if(i % 5 === 0) {
+          noteNodes.splice(i, 0, (<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>));
+        }
       }
     }
   }
@@ -167,12 +171,14 @@ const PublicNoteList = (props) => {
     return content;
   });
 
-  if(noteNodes.length < 5) {
-    noteNodes.push(<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>);
-  } else {
-    for(let i = 1; i < noteNodes.length; i++) {
-      if(i % 5 === 0) {
-        noteNodes.splice(i, 0, (<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>));
+  if(!props.user.account.premium) {
+    if(noteNodes.length < 5) {
+      noteNodes.push(<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>);
+    } else {
+      for(let i = 1; i < noteNodes.length; i++) {
+        if(i % 5 === 0) {
+          noteNodes.splice(i, 0, (<div key={$`ad{i}`} className="ad"><h2>THIS COULD BE YOUR AD</h2></div>));
+        }
       }
     }
   }
@@ -186,8 +192,9 @@ const PublicNoteList = (props) => {
 
 const loadNotesFromServer = (callback) => {
   helper.sendAjax('GET', '/getNotes', null, (data) => {
+    console.log(cacheAccount);
     ReactDOM.render(
-      <NoteList notes={data.notes} />, document.querySelector('#content')
+      <NoteList notes={data.notes} user={cacheAccount}/>, document.querySelector('#content')
     );
     if(callback) callback(data);
   });
@@ -208,18 +215,34 @@ const loadNotefromServer = (callback, id) => {
 const loadNotesFromServerByUser = (callback, author) => {
   helper.sendAjax('GET', '/user', { author: encodeUIR(author) }, (data) => {
     ReactDOM.render(
-      <NoteList notes={data.notes} />, document.querySelector('#content')
+      <NoteList notes={data.notes} user={cacheAccount}/>, document.querySelector('#content')
     );
     if(callback) callback(data);
   })
 }
 
 const setup = (csrf) => {
-  $('#noteExpanded').hide();
+  helper.fetchAccount((data) => {
+    cacheAccount = data;
+    ReactDOM.render(
+      <a href="/premium">{data.account.premium ? 'Manage Premium' : 'Get Premium'}</a>, document.querySelector('#premium')
+    );
 
-  ReactDOM.render(
-    <NoteList notes={[]} />, document.querySelector('#content')
-  );
+    ReactDOM.render(
+      <NoteList notes={[]} user={data.account} />, document.querySelector('#content')
+    );
+
+    let params = new URLSearchParams(window.location.search);
+    if (params.has('note')) {
+      loadNotefromServer(() => {}, params.get('note'));
+    } else if (params.has('author')) {
+      loadNotesFromServerByUser(() => {}, params.get('author'));
+    } else {
+      loadNotesFromServer(() => {});
+    }
+  });
+
+  $('#noteExpanded').hide();
 
   $('#noteForm').hide();
 
@@ -245,7 +268,7 @@ const setup = (csrf) => {
     helper.sendAjax('GET', '/getPublicNotes', null, (data) => {
       getAuthor([...[...new Set(data.notes.map((e) => e.owner))]].join(','), (authors) => {
         ReactDOM.render(
-          <PublicNoteList notes={data.notes} authors={authors}/>, document.querySelector('#content')
+          <PublicNoteList notes={data.notes} user={cacheAccount} authors={authors}/>, document.querySelector('#content')
         );
       });
       $('#privateLink').show();
@@ -263,14 +286,7 @@ const setup = (csrf) => {
 
   $('#privateLink').hide();
 
-  let params = new URLSearchParams(window.location.search);
-  if (params.has('note')) {
-    loadNotefromServer(() => {}, params.get('note'));
-  } else if (params.has('author')) {
-    loadNotesFromServerByUser(() => {}, params.get('author'));
-  } else {
-    loadNotesFromServer(() => {});
-  }
+  
 };
 
 const getToken = () => {

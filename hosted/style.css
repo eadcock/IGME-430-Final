@@ -379,3 +379,57 @@ h3.noteContent {
 }
 
 /* #endregion */
+
+#offersWrapper {
+  width: 70vw;
+  height: 50vh;
+  margin: 0 auto;
+  padding: 3px 2em 10px;
+  text-align: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+}
+
+#offersWrapper h2 {
+  color: var(--text);
+  margin-bottom: 3em;
+}
+
+#offers {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+#offers div {
+  background-color: var(--foreground-light);
+  width: 25%;
+  border-radius: 20px;
+  padding: 0 1em 1em;
+}
+
+#offers div button {
+  background-color: var(--background-accent);
+  color: var(--text);
+  border: none;
+  border-radius: 8px;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#offers div button:hover {
+  cursor: pointer;
+  background-color: var(--background-dark);
+}
+
+#offers div button:disabled {
+  background-color: var(--foreground-dark);
+  cursor: default;
+}

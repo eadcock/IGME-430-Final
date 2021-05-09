@@ -3,7 +3,7 @@ const models = require('../models');
 
 const { Note } = models;
 
-const queryNote = async (req, res) => {
+const queryNote = async (req) => {
   const search = { private: false };
   if (req.query.note) {
     search._id = mongoose.Types.ObjectId(req.query.note);
@@ -28,7 +28,7 @@ const queryNote = async (req, res) => {
 const makerPage = async (req, res) => {
   if (req.query.note) {
     const result = await queryNote(req, res);
-    if (result['error']) {
+    if (result.error) {
       console.log(result);
       return res.status(400).json(result);
     }
@@ -102,18 +102,7 @@ const getPublicNotes = async (req, res) => {
   return res.json(result);
 };
 
-const getNote = async (req, res) => {
-  if (!req.query.id) {
-    return { error: 'An id is required to look up a note' };
-  }
-
-  req.query.note = req.query.id;
-  const result = await queryNote(req, res);
-  return res.json(result);
-};
-
 module.exports.makerPage = makerPage;
 module.exports.getNotes = getNotes;
-module.exports.getNote = getNote;
 module.exports.getPublicNotes = getPublicNotes;
 module.exports.make = makeNote;

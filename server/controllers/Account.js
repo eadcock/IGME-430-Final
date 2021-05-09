@@ -76,12 +76,11 @@ const signup = (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  console.log(req.query);
   req.query.id = `${req.query.id}`;
 
   // eslint-disable-next-line eqeqeq
   if (!req.query.id) {
-    return res.status(400).json({ error: 'An id is required to look up an account'});
+    return res.status(400).json({ error: 'An id is required to look up an account' });
   }
 
   const users = {};
@@ -107,6 +106,31 @@ const getUser = async (req, res) => {
   return res.json(users);
 };
 
+const premium = async (req, res) => {
+  if (!req.body.upgrade) {
+    return res.status(400).json({ error: 'Whether this is an upgrade or downgrade is required.' });
+  }
+
+  let result = 'default';
+  await Account.AccountModel.findById(mongoose.Types.ObjectId(req.session.account._id),
+    async (err, doc) => {
+      if (err || !doc) {
+        result = { error: 'There was an error getting your account', status: 500 };
+      }
+
+      // eslint-disable-next-line no-param-reassign
+      doc.premium = req.body.upgrade;
+      result = doc;
+      await doc.save().then((account) => { req.session.account = Account.AccountModel.toAPI(account); }).catch(() => { result = { error: 'There was an error saving to your account', status: 500 }; });
+    });
+  req.session.account = Account.AccountModel.toAPI(result);
+  if (!result) result = { error: 'There was an error getting your account', status: 500 };
+  if (!result || result.error) {
+    return res.status(result.status).json(result);
+  }
+  return res.json(Account.AccountModel.toAPI(result));
+};
+
 const getToken = (req, res) => {
   const csrfJSON = {
     csrfToken: req.csrfToken(),
@@ -114,6 +138,8 @@ const getToken = (req, res) => {
 
   res.json(csrfJSON);
 };
+
+const getSelf = (req, res) => res.json({ account: req.session.account });
 
 module.exports.loginPage = loginPage;
 module.exports.login = login;
@@ -123,3 +149,5 @@ module.exports.premiumPage = premiumPage;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
 module.exports.getUser = getUser;
+module.exports.premium = premium;
+module.exports.getSelf = getSelf;

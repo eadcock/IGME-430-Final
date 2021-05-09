@@ -1,3 +1,5 @@
+let cachedAccount;
+
 const handleError = (message) => {
   $('#errorMessage').text(message);
   $('#noteMessage').show();
@@ -23,6 +25,15 @@ const sendAjax = (type, action, data, success) => {
   })
 };
 
+let sessionAccount = (callback) => {
+  sendAjax('GET', '/me', null, (acc) => {
+    cachedAccount = acc;
+    callback(acc);
+  });
+};
+
 module.exports.handleError = handleError;
 module.exports.sendAjax = sendAjax;
 module.exports.redirect = redirect;
+module.exports.fetchAccount = sessionAccount;
+module.exports.cachedAccount = cachedAccount;

@@ -33,6 +33,7 @@ h1 {
   width: 100%;
   text-align: center;
   border-bottom: 1px solid var(--highlight);
+  box-shadow: 0 3px 2px 0 var(--background-accent);
 }
 
 .smaller-title {
@@ -55,9 +56,9 @@ nav:nth-child(1) {
 }
 
 .navlink {
+  text-align: center;
   padding: 5px;
   padding-top: 12px;
-  padding-left: 20px;
   color: var(--foreground-dark);
   font-size: 1.3em;
   float: left;
@@ -83,6 +84,10 @@ nav:nth-child(1) {
   color: var(--highlight);
 }
 
+#publicLink,
+#privateLink {
+  cursor: pointer;
+}
 /* #endregion */
 
 /* #region  Forms */
@@ -209,16 +214,8 @@ nav:nth-child(1) {
   transform: rotate(330deg);
 }
 
-#notes {
-  width: 40%;
-  min-width: 400px;
-  border: 2px solid var(--foreground-light);
-  border-radius: 4px;
-  margin: 0 auto;
-  margin-top: 100px;
-}
-
 .note {
+  cursor: pointer;
   width: 95%;
   margin: 0 auto;
   margin-top: 2px;
@@ -234,11 +231,11 @@ nav:nth-child(1) {
 .note:hover {
   transition: border-color 0.2s ease-out;
   border-color: rgba(255, 255, 255, 0.8);
-  transition: background-color 2.6s ease-out;
+  transition: background-color 0.5s ease-out;
   background-color: var(--foreground-accent);
 }
 
-img.noteFace {
+img.notebook {
   margin-left: 10px;
   margin-right: 10px;
   height: 150px;
@@ -247,7 +244,7 @@ img.noteFace {
   margin-top: 10px;
   float: left;
   --shadow-size: 4px;
-  box-shadow: 0 0 var(--shadow-size) var(--shadow-size) var(--highlight), inset 0 0 0 var(--shadow-size) var(--highlight);
+  box-shadow: 0 0 var(--shadow-size) var(--shadow-size) var(--highlight), inset 0 0 0  var(--shadow-size) var(--highlight);
 }
 
 h3.emptyNote {
@@ -298,24 +295,42 @@ h3.noteContent {
   transition: all 0.2s ease;
 }
 
-#noteExpanded {
-  display: none;
+.noteExpanded {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
   background-color: var(--foreground-light);
   width: 70vw;
+  height: 60vh;
   margin: 0 auto;
+  padding: 3px 2em 10px;
   text-align: center;
   box-shadow: 0 0 3px 3px var(--background-accent);
+  border-radius: 20px;
 }
 
-#noteExpanded h2 {
+.noteExpanded h2 {
   font-size: 3em;
-  color: var(--background-dark)
+  color: var(--background-dark);
+  margin-top: 0;
+}
+
+.noteExpanded .noteContent,
+.noteAuthor {
+  text-align: left;
+  flex-grow: 1;
+}
+
+.noteExpanded span {
+  display: flex;
 }
 
 #expandedExit,
 #expandedExitHover {
+  cursor: pointer;
   position: absolute;
   left: 80vw;
+  top: 190px;
 
   width: 40px;
   height: 40px;

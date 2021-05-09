@@ -52,6 +52,18 @@ const getNotes = (req, res) => Note.NoteModel.findByOwner(req.session.account._i
   return res.json({ notes: docs });
 });
 
+const getPublicNotes = (req, res) => {
+  return Note.NoteModel.find({ private: false }, 'title content createdData owner', (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.json({ notes: docs });
+  });
+};
+
 module.exports.makerPage = makerPage;
 module.exports.getNotes = getNotes;
+module.exports.getPublicNotes = getPublicNotes;
 module.exports.make = makeNote;

@@ -21,19 +21,20 @@ const handleExitNote = (e) => {
   $('#notes').show();
 }
 
-const NoteExpanded = async (props) => {
-  sendAjax('GET', '/getUser', { id: encodeURIComponent(props.note.owner) }, (res) => {
-    return (
-      <div className="noteExpanded">
-        <img id='expandedExitHover' src='./assets/img/cross-hover.svg' alt='exit cross when hovered over' onClick={handleExitNote}/>
-        <img id='expandedExit' src='./assets/img/cross.svg' alt='exit cross'/>
-        <h2>{props.note.title}</h2>
-        <p>{props.note.content}</p>
-        <p className="noteAuthor">Author: {props.note.owner}</p>
-        <p className="noteDate">Posted on: {props.note.created}</p>
-      </div>
-    );
-  });
+const NoteExpanded = (props) => {
+  return (
+    <div className="noteExpanded">
+      <h2>{props.note.title}</h2>
+      <img id='expandedExitHover' src='./assets/img/cross-hover.svg' alt='exit cross when hovered over' onClick={handleExitNote}/>
+      <img id='expandedExit' src='./assets/img/cross.svg' alt='exit cross'/>
+      <p className="noteContent">{props.note.content}</p>
+      <span>
+        <p className="noteAuthor">Author: {props.account.username}</p>
+        <p className="noteDate">Posted on: {(new Date(props.note.createdData)).toLocaleDateString("en-US")}</p>
+      </span>
+      
+    </div>
+  );
 }
 
 const NoteForm = (props) => {
@@ -55,11 +56,22 @@ const NoteForm = (props) => {
   )
 };
 
+const getAuthor = (id, callback) => {
+  sendAjax('GET', '/getUser', { id: encodeURIComponent(id) }, (res) => {
+    callback(res);
+  });
+};
+
 const DisplayNote = (note) => {
   $('#notes').hide();
-  ReactDOM.render(
-    <NoteExpanded note={note}/>, document.querySelector('#noteExpanded')
-  );
+  
+  getAuthor(note.owner, (res) => {
+    console.log(res);
+    ReactDOM.render(
+      <NoteExpanded note={note} account={res[note.owner]}/>, document.querySelector('#noteExpanded')
+    );
+  });
+
   $('#noteExpanded').show();
 }
 
@@ -75,9 +87,10 @@ const NoteList = (props) => {
   const noteNodes = props.notes.map((note) => {
     return (
       <div key={note._id} className="note" onClick={(e) => DisplayNote(note)}>
-        <img src="/assets/img/moleskine.svg" alt="note face" className="noteFace" />
+        <img src="/assets/img/moleskine.svg" alt="notebook" className="notebook" />
         <h3 className="noteTitle"> Title: {note.title} </h3>
         <h3 className="noteContent"> Preview: {note.content} </h3>
+        <h3 className="noteDate"> Created: {(new Date(note.createdData)).toLocaleDateString("en-US")}</h3>
       </div>
     );
   });
@@ -89,7 +102,33 @@ const NoteList = (props) => {
   );
 };
 
-ReactDOM.rend
+const PublicNoteList = (props) => {
+  console.log(props);
+  if (props.notes.length === 0) {
+    return (
+      <div className="noteList">
+        <h3 className="emptyNote">No Notes yet</h3>
+      </div>
+    );
+  }
+
+  const noteNodes = props.notes.map((note, i) => {
+    return (
+      <div key={note._id} className="note" onClick={(e) => DisplayNote(note)}>
+        <img src="/assets/img/moleskine.svg" alt="notebook" className="notebook" />
+        <h3 className="noteTitle"> Title: {note.title} </h3>
+        <h3 className="noteContent"> Preview: {note.content} </h3>
+        <h3 className="author"> Author: {props.authors[note.owner].username} </h3>
+      </div>
+    );
+  });
+
+  return (
+    <div className="noteList">
+      {noteNodes}
+    </div>
+  );
+}
 
 const loadNotesFromServer = () => {
   sendAjax('GET', '/getNotes', null, (data) => {
@@ -100,9 +139,7 @@ const loadNotesFromServer = () => {
 };
 
 const setup = (csrf) => {
-  ReactDOM.render(
-    <NoteForm csrf={csrf} />, document.querySelector('#makeNote')
-  );
+  $('#noteExpanded').hide();
 
   ReactDOM.render(
     <NoteList notes={[]} />, document.querySelector('#notes')
@@ -110,9 +147,33 @@ const setup = (csrf) => {
 
   $('#noteForm').hide();
 
-  $('#add').click(() => {
+  $('#add').on('click', () => {
+    ReactDOM.render(
+      <NoteForm csrf={csrf} />, document.querySelector('#makeNote')
+    );
     $('#noteForm').show();
   });
+
+  $('#publicLink').on('click', () => {
+    sendAjax('GET', '/getPublicNotes', null, (data) => {
+      console.log([...[...new Set(data.notes.map((e) => e.owner))]].join(','));
+      getAuthor([...[...new Set(data.notes.map((e) => e.owner))]].join(','), (authors) => {
+        ReactDOM.render(
+          <PublicNoteList notes={data.notes} authors={authors}/>, document.querySelector('#notes')
+        );
+      });
+      $('#privateLink').show();
+      $('#publicLink').hide();
+    });
+  });
+
+  $('#privateLink').on('click', () => {
+    loadNotesFromServer();
+    $('#privateLink').hide();
+    $('#publicLink').show();
+  });
+
+  $('#privateLink').hide();
 
   loadNotesFromServer();
 };
@@ -123,6 +184,6 @@ const getToken = () => {
   });
 };
 
-$(document).ready(() => {
+$(() => {
   getToken();
 });

@@ -1,8 +1,12 @@
 "use strict";
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var handleNote = function handleNote(e) {
   e.preventDefault();
@@ -25,46 +29,27 @@ var handleExitNote = function handleExitNote(e) {
   $('#notes').show();
 };
 
-var NoteExpanded = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(props) {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            sendAjax('GET', '/getUser', {
-              id: encodeURIComponent(props.note.owner)
-            }, function (res) {
-              return (/*#__PURE__*/React.createElement("div", {
-                  className: "noteExpanded"
-                }, /*#__PURE__*/React.createElement("img", {
-                  id: "expandedExitHover",
-                  src: "./assets/img/cross-hover.svg",
-                  alt: "exit cross when hovered over",
-                  onClick: handleExitNote
-                }), /*#__PURE__*/React.createElement("img", {
-                  id: "expandedExit",
-                  src: "./assets/img/cross.svg",
-                  alt: "exit cross"
-                }), /*#__PURE__*/React.createElement("h2", null, props.note.title), /*#__PURE__*/React.createElement("p", null, props.note.content), /*#__PURE__*/React.createElement("p", {
-                  className: "noteAuthor"
-                }, "Author: ", props.note.owner), /*#__PURE__*/React.createElement("p", {
-                  className: "noteDate"
-                }, "Posted on: ", props.note.created))
-              );
-            });
-
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
-
-  return function NoteExpanded(_x) {
-    return _ref.apply(this, arguments);
-  };
-}();
+var NoteExpanded = function NoteExpanded(props) {
+  return (/*#__PURE__*/React.createElement("div", {
+      className: "noteExpanded"
+    }, /*#__PURE__*/React.createElement("h2", null, props.note.title), /*#__PURE__*/React.createElement("img", {
+      id: "expandedExitHover",
+      src: "./assets/img/cross-hover.svg",
+      alt: "exit cross when hovered over",
+      onClick: handleExitNote
+    }), /*#__PURE__*/React.createElement("img", {
+      id: "expandedExit",
+      src: "./assets/img/cross.svg",
+      alt: "exit cross"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "noteContent"
+    }, props.note.content), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("p", {
+      className: "noteAuthor"
+    }, "Author: ", props.account.username), /*#__PURE__*/React.createElement("p", {
+      className: "noteDate"
+    }, "Posted on: ", new Date(props.note.createdData).toLocaleDateString("en-US"))))
+  );
+};
 
 var NoteForm = function NoteForm(props) {
   return (/*#__PURE__*/React.createElement("form", {
@@ -101,11 +86,23 @@ var NoteForm = function NoteForm(props) {
   );
 };
 
+var getAuthor = function getAuthor(id, callback) {
+  sendAjax('GET', '/getUser', {
+    id: encodeURIComponent(id)
+  }, function (res) {
+    callback(res);
+  });
+};
+
 var DisplayNote = function DisplayNote(note) {
   $('#notes').hide();
-  ReactDOM.render( /*#__PURE__*/React.createElement(NoteExpanded, {
-    note: note
-  }), document.querySelector('#noteExpanded'));
+  getAuthor(note.owner, function (res) {
+    console.log(res);
+    ReactDOM.render( /*#__PURE__*/React.createElement(NoteExpanded, {
+      note: note,
+      account: res[note.owner]
+    }), document.querySelector('#noteExpanded'));
+  });
   $('#noteExpanded').show();
 };
 
@@ -128,13 +125,15 @@ var NoteList = function NoteList(props) {
         }
       }, /*#__PURE__*/React.createElement("img", {
         src: "/assets/img/moleskine.svg",
-        alt: "note face",
-        className: "noteFace"
+        alt: "notebook",
+        className: "notebook"
       }), /*#__PURE__*/React.createElement("h3", {
         className: "noteTitle"
       }, " Title: ", note.title, " "), /*#__PURE__*/React.createElement("h3", {
         className: "noteContent"
-      }, " Preview: ", note.content, " "))
+      }, " Preview: ", note.content, " "), /*#__PURE__*/React.createElement("h3", {
+        className: "noteDate"
+      }, " Created: ", new Date(note.createdData).toLocaleDateString("en-US")))
     );
   });
   return (/*#__PURE__*/React.createElement("div", {
@@ -143,7 +142,43 @@ var NoteList = function NoteList(props) {
   );
 };
 
-ReactDOM.rend;
+var PublicNoteList = function PublicNoteList(props) {
+  console.log(props);
+
+  if (props.notes.length === 0) {
+    return (/*#__PURE__*/React.createElement("div", {
+        className: "noteList"
+      }, /*#__PURE__*/React.createElement("h3", {
+        className: "emptyNote"
+      }, "No Notes yet"))
+    );
+  }
+
+  var noteNodes = props.notes.map(function (note, i) {
+    return (/*#__PURE__*/React.createElement("div", {
+        key: note._id,
+        className: "note",
+        onClick: function onClick(e) {
+          return DisplayNote(note);
+        }
+      }, /*#__PURE__*/React.createElement("img", {
+        src: "/assets/img/moleskine.svg",
+        alt: "notebook",
+        className: "notebook"
+      }), /*#__PURE__*/React.createElement("h3", {
+        className: "noteTitle"
+      }, " Title: ", note.title, " "), /*#__PURE__*/React.createElement("h3", {
+        className: "noteContent"
+      }, " Preview: ", note.content, " "), /*#__PURE__*/React.createElement("h3", {
+        className: "author"
+      }, " Author: ", props.authors[note.owner].username, " "))
+    );
+  });
+  return (/*#__PURE__*/React.createElement("div", {
+      className: "noteList"
+    }, noteNodes)
+  );
+};
 
 var loadNotesFromServer = function loadNotesFromServer() {
   sendAjax('GET', '/getNotes', null, function (data) {
@@ -154,16 +189,40 @@ var loadNotesFromServer = function loadNotesFromServer() {
 };
 
 var setup = function setup(csrf) {
-  ReactDOM.render( /*#__PURE__*/React.createElement(NoteForm, {
-    csrf: csrf
-  }), document.querySelector('#makeNote'));
+  $('#noteExpanded').hide();
   ReactDOM.render( /*#__PURE__*/React.createElement(NoteList, {
     notes: []
   }), document.querySelector('#notes'));
   $('#noteForm').hide();
-  $('#add').click(function () {
+  $('#add').on('click', function () {
+    ReactDOM.render( /*#__PURE__*/React.createElement(NoteForm, {
+      csrf: csrf
+    }), document.querySelector('#makeNote'));
     $('#noteForm').show();
   });
+  $('#publicLink').on('click', function () {
+    sendAjax('GET', '/getPublicNotes', null, function (data) {
+      console.log(_toConsumableArray(new Set(data.notes.map(function (e) {
+        return e.owner;
+      }))).concat().join(','));
+      getAuthor(_toConsumableArray(new Set(data.notes.map(function (e) {
+        return e.owner;
+      }))).concat().join(','), function (authors) {
+        ReactDOM.render( /*#__PURE__*/React.createElement(PublicNoteList, {
+          notes: data.notes,
+          authors: authors
+        }), document.querySelector('#notes'));
+      });
+      $('#privateLink').show();
+      $('#publicLink').hide();
+    });
+  });
+  $('#privateLink').on('click', function () {
+    loadNotesFromServer();
+    $('#privateLink').hide();
+    $('#publicLink').show();
+  });
+  $('#privateLink').hide();
   loadNotesFromServer();
 };
 
@@ -173,7 +232,7 @@ var getToken = function getToken() {
   });
 };
 
-$(document).ready(function () {
+$(function () {
   getToken();
 });
 "use strict";

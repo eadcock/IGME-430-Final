@@ -54,7 +54,7 @@ NoteSchema.statics.toAPI = (doc) => ({
 
 NoteSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
-    owner: convertId(ownerId),
+    owner: ownerId,
   };
 
   return NoteModel.find(search).select('title content owner createdData').lean().exec(callback);

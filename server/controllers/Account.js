@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const models = require('../models');
 
 const { Account } = models;
@@ -70,23 +71,34 @@ const signup = (req, res) => {
   });
 };
 
-const getUser = (req, res) => {
+const getUser = async (req, res) => {
   req.query.id = `${req.query.id}`;
 
   // eslint-disable-next-line eqeqeq
-  if (req.query.id == undefined) {
+  if (!req.query.id) {
     return res.status(400).json({ error: 'An id is required to look up an account'});
   }
 
+  const users = {};
 
-  return Account.AccountModel.findById(req.query.id, (err, account) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).json({ error: 'An error occurred' });
+  const ids = req.query.id.split(',');
+
+  for (let i = 0; i < ids.length; i++) {
+    if (!mongoose.Types.ObjectId.isValid(ids[i])) {
+      users.push({ [ids[i]]: ids[i], error: `${ids[i]} is an invalid id` });
+    } else {
+      // eslint-disable-next-line no-await-in-loop
+      await Account.AccountModel.findById(ids[i], (err, account) => {
+        if (err) {
+          users[ids[i]] = { error: 'An error occurred getting this account' };
+        }
+
+        users[account._id] = Account.AccountModel.toAPI(account);
+      });
     }
+  }
 
-    return res.json({ account: Account.AccountModel.toAPI(account) });
-  });
+  return res.json(users);
 };
 
 const getToken = (req, res) => {

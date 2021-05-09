@@ -12,6 +12,7 @@ const router = (app) => {
   app.post('/maker', mid.requiresLogin, controllers.Note.make);
   app.get('/', mid.requireSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('/getUser', mid.requireSecure, controllers.Account.getUser);
+  app.get('/getPublicNotes', controllers.Note.getPublicNotes);
 };
 
 module.exports = router;

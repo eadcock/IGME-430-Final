@@ -20,7 +20,7 @@ const login = (req, res) => {
   const password = `${req.body.pass}`;
 
   if (!username || !password) {
-    return res.status(400).json({ error: 'RAWR! All fields are required' });
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
   return Account.AccountModel.authenticate(username, password, (err, account) => {
@@ -70,6 +70,25 @@ const signup = (req, res) => {
   });
 };
 
+const getUser = (req, res) => {
+  req.query.id = `${req.query.id}`;
+
+  // eslint-disable-next-line eqeqeq
+  if (req.query.id == undefined) {
+    return res.status(400).json({ error: 'An id is required to look up an account'});
+  }
+
+
+  return Account.AccountModel.findById(req.query.id, (err, account) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.json({ account: Account.AccountModel.toAPI(account) });
+  });
+};
+
 const getToken = (req, res) => {
   const csrfJSON = {
     csrfToken: req.csrfToken(),
@@ -84,3 +103,4 @@ module.exports.logout = logout;
 module.exports.signupPage = signupPage;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
+module.exports.getUser = getUser;

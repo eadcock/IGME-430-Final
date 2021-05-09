@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const favicon = require('serve-favicon');
@@ -11,10 +10,11 @@ const RedisStore = require('connect-redis')(session);
 const url = require('url');
 const redis = require('redis');
 const csrf = require('csurf');
+const path = require('path');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
+const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/NoteKeeper';
 
 const mongooseOptions = {
   useNewUrlParser: true,

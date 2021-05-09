@@ -1,262 +1,335 @@
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
+:root {
+  --background-dark: #3E1929;
+  --background-accent: #845A6D;
+  --highlight: #B0DAF1;
+  --foreground-light: #8D91C7;
+  --foreground-accent: #6E75A8;
+  --foreground-dark: #191f3e;
+  --text: #d7f1ff;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: var(--background-dark);
+  color: var(--foreground-dark);
 }
 
 #logo {
-    height: 40px;
-    width: 40;
-    padding-top: 5px;
-    float:left;
-    border-radius: 8px;
+  height: 40px;
+  width: 40;
+  padding-top: 5px;
+  float: left;
+  border-radius: 8px;
 }
 
+h1 {
+  color: var(--highlight);
+  font-size: 6em;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid var(--highlight);
+}
+
+.smaller-title {
+  font-size: 4em;
+  margin-top: 0.1em;
+}
+
+/* #region  nav */
 nav {
-    width: 100%;
-    height: 50px;
-    background-color: #55acee;
+  width: 100%;
+  height: 50px;
+  background-color: var(--foreground-light);
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
 }
 
 nav:nth-child(1) {
-    padding-left: 25px;
+  padding-left: 25px;
 }
 
 .navlink {
-    padding: 5px;
-    padding-top: 12px;
-    padding-left: 20px;
-    color: white;
-    font-size: 1.3em;
-    float: left;
+  padding: 5px;
+  padding-top: 12px;
+  padding-left: 20px;
+  color: var(--foreground-dark);
+  font-size: 1.3em;
+  float: left;
 }
 
-.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
-    text-decoration: none;
-    padding: 5px;
-    border-radius: 4px;
-    background-color: #55acee;
-    transition: background-color 0.4s ease;
+.navlink a,
+.navlink a:link,
+.navlink a:visited,
+.navlink a:hover,
+.navlink a:active {
+  text-decoration: none;
+  padding: 5px;
+  border-radius: 4px;
+  background-color: var(--foreground-light);
+  transition: background-color 0.4s ease;
+  transition: color 0.4s ease;
 }
 
 .navlink a:hover {
-    transition: background-color 0.8s ease;
-    background-color: #66bdff;
+  transition: background-color 0.8s ease;
+  background-color: var(--foreground-accent);
+  transition: color 0.8s ease;
+  color: var(--highlight);
 }
 
-.domoForm {
-    border: 2px solid #338acc;
-    height: 35px;
-    width: 700px;
-    margin-top:0px;
-    padding-top:10px;
-    background-color: #55acee;
-    border-bottom-right-radius: 4px;
-    border-top-right-radius: 4px;
-}
+/* #endregion */
 
-.domoForm label {
-    display: inline-block;
-    width: 75px;
-    margin-left: 10px;
-    font-size: 1.2em;
-    float: left;
-    color: white;
-}
-
-.domoForm input[type=text] {
-    float:left;
-}
-
-.makeDomoSubmit {
-    transition: background-color 0.4s ease;
-    display: inline;
-    width: 90px;
-    background-color: #55acee;
-    border-radius: 2px;
-    color: white;
-    text-decoration: none;
-}
-
-.makeDomoSubmit:link, .makeDomoSubmit:visited, .makeDomoSubmit:hover, .makeDomoSubmit:active {
-    color: white;
-}
-
-.makeDomoSubmit:hover {
-    transition: background-color 0.4s ease;
-    background-color: #338acc;
-}
-
+/* #region  Forms */
 .mainForm {
-    height: 300px;
-    width: 350px;
-    margin: 0 auto;
-    padding-top: 350px;
-    font-size: 1.2em;
+  background-color: var(--foreground-light);
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  align-content: center;
+  flex-wrap: wrap;
+  border-radius: 40px;
+
+  height: 300px;
+  width: 350px;
+  margin: 0 auto;
+  margin-top: 100px;
+  font-size: 1.2em;
 }
 
 .mainForm h3 {
-    text-align: center;
+  text-align: center;
 }
 
 .mainForm label {
-    display: inline-block;
-    width: 100px;
-    margin-right: 10px;
-    text-align: right;
-    font-size: 1.2em;
+  display: inline-block;
+  width: 100px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+  font-size: 1.2em;
 }
 
 .formSubmit {
-    transition: background-color 0.4s ease;
-    display: block;
-    text-align: center;
-    margin: 0 auto;
-    margin-top: 14px;
-    font-size: 1.2em;
-    width: 100px;
-    background-color: #55acee;
-    border-radius: 2px;
-    border-color: #66acee;
-    padding: 3px 0px;
-    color: white;
-    text-decoration: none;
-}
-
-.formSubmit:link, .formSubmit:visited, .formSubmit:hover, .formSubmit:active {
-    color: white;
+  transition: background-color 0.4s ease;
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 14px;
+  font-size: 1.2em;
+  background-color: var(--foreground-light);
+  border-radius: 2px;
+  border-color: var(--highlight);
+  color: var(--foreground-dark);
+  padding: 3px 3px;
 }
 
 .formSubmit:hover {
-    transition: background-color 0.4s ease;
-    background-color: #338acc;
+  transition: background-color 0.4s ease;
+  background-color: var(--foreground-accent);
 }
 
-#user, #pass, #pass2 {
-    text-align: center;
-    font-size: 1.1em;
-    width: 180px;
-    border-radius: 6px;
+#noteForm {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  align-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
-#user:focus, #pass:focus, #pass2:focus {
-    outline: none;
-    box-shadow: 0px 0px 1px 1px #55acee;
+#noteForm label {
+  width: 100%;
+  text-align: center;
 }
 
-#domoMessage {
-    display:none;
-    top: 250px;
-    width: 250px;
-    height: 650px;
-    position: absolute;
-    z-index: 200;
-    right: 0px;
-    overflow: hidden;
+#noteForm input {
+  margin-bottom: 10px;
 }
 
-#domoMessage h3 {
-    width: 200px;
-    position: absolute;
-    top: 0px;
-    left: 20px;
+#user,
+#pass,
+#pass2 {
+  text-align: center;
+  font-size: 1.1em;
+  width: 180px;
+  border-radius: 6px;
 }
 
-#speech {
-    height: 120px;
-    width: 250px;
-    z-index:300;
+#user:focus,
+#pass:focus,
+#pass2:focus {
+  outline: none;
+  box-shadow: 0px 0px 1px 1px var(--foreground-light);
+}
+
+/* #endregion */
+
+#noteMessage {
+  display: none;
+  width: 250px;
+  position: absolute;
+  top: 25vh;
+  left: 50vw;
+  transform: translateX(-50%);
+}
+
+#noteMessage h3 {
+  background-color: var(--foreground-accent);
+  padding: 10px 10px;
+  border-radius: 20px;
+  width: 200px;
+  position: absolute;
+  top: 0px;
+  left: 20px;
 }
 
 #errorMessage {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: red;
-    font-style: italic;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: red;
+  font-style: italic;
 }
 
-#domo {
-    z-index: 225;
-    margin-top: -20px;
-    margin-left: 135px;
-    height: 450px;
-    width: 300px;
-    -ms-transform: rotate(330deg);
-    -webkit-transform: rotate(330deg); 
-    transform: rotate(330deg);
+/* #region note */
+#note {
+  z-index: 225;
+  margin-top: -20px;
+  margin-left: 135px;
+  height: 450px;
+  width: 300px;
+  -ms-transform: rotate(330deg);
+  -webkit-transform: rotate(330deg);
+  transform: rotate(330deg);
 }
 
-#domos {
-    width: 40%;
-    min-width: 400px;
-    border: 2px solid #55acee;
-    border-radius: 4px;
-    margin: 0 auto;
-    margin-top: 100px;
+#notes {
+  width: 40%;
+  min-width: 400px;
+  border: 2px solid var(--foreground-light);
+  border-radius: 4px;
+  margin: 0 auto;
+  margin-top: 100px;
 }
 
-.domo {
-    width: 95%;
-    margin: 0 auto;
-    margin-top: 2px;
-    margin-bottom: 2px;
-    border: 2px solid #55acee;
-    border-radius: 4px;
-    background-color: #55acee;
-    padding: 10px;
-    min-height:60px;
-    overflow: hidden;
+.note {
+  width: 95%;
+  margin: 0 auto;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border: 2px solid var(--foreground-light);
+  border-radius: 4px;
+  background-color: var(--foreground-light);
+  padding: 10px;
+  min-height: 60px;
+  overflow: hidden;
 }
 
-.domo:hover {
-    transition: border-color 0.2s ease-out;
-    border-color: rgba(255,255,255, 0.8);
-    transition: background-color 2.6s ease-out;
-    background-color: #66bfff;
+.note:hover {
+  transition: border-color 0.2s ease-out;
+  border-color: rgba(255, 255, 255, 0.8);
+  transition: background-color 2.6s ease-out;
+  background-color: var(--foreground-accent);
 }
 
-img.domoFace {
-    margin-left: 25px;
-    margin-right: 10px;
-    height: 50px;
-    width: 50px;
-    border-radius: 4px;
-    margin-top:10px;
-    float:left;
+img.noteFace {
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  margin-top: 10px;
+  float: left;
+  --shadow-size: 4px;
+  box-shadow: 0 0 var(--shadow-size) var(--shadow-size) var(--highlight), inset 0 0 0 var(--shadow-size) var(--highlight);
 }
 
-h3.emptyDomo {
-    width: 400px;
-    font-size: 1.5em;
-    margin: 0 auto;
-    text-align: center;
-    margin-top: 18px;
+h3.emptyNote {
+  width: 400px;
+  font-size: 1.5em;
+  margin: 5px auto;
+  text-align: center;
+  color: var(--text);
 }
 
-h3.domoName {
-    float:left;
-    width: 200px;
-    font-weight: bold;
-    padding-left: 65px;
-    font-size: 1.5em;
+h3.noteContent,
+h3.noteTitle {
+  float: left;
+  width: 65%;
+  font-weight: bold;
+  font-size: 1.5em;
 }
 
-h3.domoAge {
-    float:right;
-    text-align: left;
-    width: 100px;
-    font-weight: bold;
-    padding-right: 40px;
-    font-size: 1.5em;
+h3.noteContent {
+  text-align: left;
+  overflow: hidden;
 }
 
-.domo:first-child {
-    margin-top: 10px;
+.note:first-child {
+  margin-top: 10px;
 }
 
-.domo:last-child {
-    margin-bottom:10px;
+.note:last-child {
+  margin-bottom: 10px;
+}
+
+/* #endregion */
+
+#add {
+  width: 75px;
+  height: 75px;
+  position: fixed;
+  top: 90vh;
+  left: 93vw;
+  transition: all 0.2s ease;
+}
+
+#add:hover {
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  top: 89vh;
+  transition: all 0.2s ease;
+}
+
+#noteExpanded {
+  display: none;
+  background-color: var(--foreground-light);
+  width: 70vw;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: 0 0 3px 3px var(--background-accent);
+}
+
+#noteExpanded h2 {
+  font-size: 3em;
+  color: var(--background-dark)
+}
+
+#expandedExit,
+#expandedExitHover {
+  position: absolute;
+  left: 80vw;
+
+  width: 40px;
+  height: 40px;
+}
+
+#expandedExit {
+  pointer-events: none;
+  z-index: 2;
+}
+
+#expandedExitHover {
+  z-index: 1;
+}
+
+#expandedExitHover:hover {
+  z-index: 3;
 }

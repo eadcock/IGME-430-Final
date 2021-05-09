@@ -8,11 +8,11 @@
   "description": "A Simple Login Example using Node.js, Mongo and Redis",
   "main": "./server/app.js",
   "scripts": {
-    "buildLoginBundle": "webpack --mode production --config webpack-login.config.js",
-    "buildAppBundle": "webpack --mode production",
-    "buildPremiumBundle": "webpack --mode production --config webpack-premium.config.js",
+    "buildLoginBundle": "webpack --mode development --config webpack-login.config.js",
+    "buildAppBundle": "webpack --mode development",
+    "buildPremiumBundle": "webpack --mode development --config webpack-premium.config.js",
     "build": "npm run buildLoginBundle && npm run buildAppBundle && npm run buildPremiumBundle",
-    "buildAndRun": "npm run webpack && npm start",
+    "buildAndRun": "npm run build && npm start",
     "watchLoginBundle": "babel --watch ./client/login ./client/helper --presets @babel/preset-react --out-file ./hosted/loginBundle.js",
     "watchAppBundle": "babel --watch ./client/app ./client/helper --presets @babel/preset-react --out-file ./hosted/bundle.js",
     "nodemon": "nodemon --watch ./server ./server/app.js",
@@ -64,6 +64,7 @@
     "react-dom": "^17.0.2",
     "redis": "^3.1.2",
     "serve-favicon": "^2.5.0",
+    "tinymce": "^5.8.0",
     "underscore": "^1.13.1"
   }
 }

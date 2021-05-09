@@ -1,4 +1,16 @@
-let { Editor }  = require('@tinymce/tinymce-react');
+let tinymce = require('tinymce');
+let { Editor } = require('@tinymce/tinymce-react');
+
+// Default icons are required for TinyMCE 5.3 or above
+require('tinymce/icons/default');
+
+// A theme is also required
+require('tinymce/themes/silver');
+
+// Any plugins you want to use has to be imported
+require('tinymce/plugins/paste');
+require('tinymce/plugins/link');
+
 let helper = require('./../helper/helper.js');
 
 let showingCreateForm = false;
@@ -61,7 +73,6 @@ const NoteForm = (props) => {
         init={{
           setup: (e) => {
             e.on('change', (inst) => {
-              inst.getBody().innerHTML = inst.getBody().innerHTML.replace("/<\/?script>/", "");
               e.save();
             });
           },

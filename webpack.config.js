@@ -17,6 +17,7 @@ module.exports = {
           options: {
             exclude: [
               // \\ for Windows, \/ for Mac OS and Linux
+              /tinymce/,
               /node_modules[\\\/]core-js/,
               /node_modules[\\\/]webpack[\\\/]buildin/,
             ],

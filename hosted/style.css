@@ -320,9 +320,10 @@ h3.noteContent {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  justify-content: center;
   background-color: var(--foreground-light);
   width: 70vw;
-  height: 60vh;
+  height: fit-content;
   margin: 0 auto;
   padding: 3px 2em 10px;
   text-align: center;
@@ -334,6 +335,7 @@ h3.noteContent {
   font-size: 3em;
   color: var(--background-dark);
   margin-top: 0;
+  width: 100%;
 }
 
 .noteExpanded .noteContent {

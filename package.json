@@ -11,7 +11,7 @@
     "buildLoginBundle": "babel ./client/login ./client/helper --presets @babel/preset-react --out-file ./hosted/loginBundle.js",
     "buildAppBundle": "babel ./client/app ./client/helper --presets @babel/preset-react --out-file ./hosted/bundle.js",
     "build": "npm run buildLoginBundle && npm run buildAppBundle",
-    "webpack": "webpack --mode development --hot && webpack --mode development --config webpack-premium.config.js && webpack --mode development --config webpack-login.config.js",
+    "webpack": "webpack --mode production && webpack --mode production --config webpack-premium.config.js && webpack --mode production --config webpack-login.config.js",
     "buildAndRun": "npm run webpack && npm start",
     "watchLoginBundle": "babel --watch ./client/login ./client/helper --presets @babel/preset-react --out-file ./hosted/loginBundle.js",
     "watchAppBundle": "babel --watch ./client/app ./client/helper --presets @babel/preset-react --out-file ./hosted/bundle.js",

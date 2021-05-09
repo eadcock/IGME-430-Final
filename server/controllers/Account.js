@@ -11,6 +11,10 @@ const signupPage = (req, res) => {
   res.render('signup', { csrfToken: req.csrfToken() });
 };
 
+const premiumPage = (req, res) => {
+  res.render('premium', { csrfToken: req.csrfToken() });
+};
+
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -41,10 +45,10 @@ const signup = (req, res) => {
   req.body.pass2 = `${req.body.pass2}`;
 
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required' });
+    return res.status(400).json({ error: 'All fields are required' });
   }
   if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match' });
+    return res.status(400).json({ error: 'Passwords do not match' });
   }
 
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
@@ -72,6 +76,7 @@ const signup = (req, res) => {
 };
 
 const getUser = async (req, res) => {
+  console.log(req.query);
   req.query.id = `${req.query.id}`;
 
   // eslint-disable-next-line eqeqeq
@@ -81,11 +86,12 @@ const getUser = async (req, res) => {
 
   const users = {};
 
-  const ids = req.query.id.split(',');
+  const ids = [...req.query.id.split(',')];
+  console.log(req.query);
 
   for (let i = 0; i < ids.length; i++) {
     if (!mongoose.Types.ObjectId.isValid(ids[i])) {
-      users.push({ [ids[i]]: ids[i], error: `${ids[i]} is an invalid id` });
+      users[ids[i]] = { error: `${ids[i]} is an invalid id` };
     } else {
       // eslint-disable-next-line no-await-in-loop
       await Account.AccountModel.findById(ids[i], (err, account) => {
@@ -113,6 +119,7 @@ module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signupPage = signupPage;
+module.exports.premiumPage = premiumPage;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
 module.exports.getUser = getUser;

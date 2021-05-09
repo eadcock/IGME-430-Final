@@ -1,15 +1,49 @@
+const mongoose = require('mongoose');
 const models = require('../models');
 
 const { Note } = models;
 
-const makerPage = (req, res) => {
-  Note.NoteModel.findByOwner(req.session.account._id, (err, docs) => {
+const queryNote = async (req, res) => {
+  const search = { private: false };
+  if (req.query.note) {
+    search._id = mongoose.Types.ObjectId(req.query.note);
+  } else if (req.query.author) {
+    search.owner = req.query.author;
+  }
+  let result;
+  await Note.NoteModel.find(search,
+    'title content createdData owner',
+    { sort: { createdData: -1 } },
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+        result = { error: 'An error occurred' };
+      }
+
+      result = { notes: docs };
+    });
+  return result;
+};
+
+const makerPage = async (req, res) => {
+  if (req.query.note) {
+    const result = await queryNote(req, res);
+    if (result['error']) {
+      console.log(result);
+      return res.status(400).json(result);
+    }
+    const app = res.render('app', { csrfToken: req.csrfToken(), notes: result });
+    return app;
+  }
+
+  return Note.NoteModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
     }
 
-    return res.render('app', { csrfToken: req.csrfToken(), notes: docs });
+    const app = res.render('app', { csrfToken: req.csrfToken(), notes: docs });
+    return app;
   });
 };
 
@@ -43,17 +77,12 @@ const makeNote = (req, res) => {
   return notePromise;
 };
 
-const getNotes = (req, res) => Note.NoteModel.findByOwner(req.session.account._id, (err, docs) => {
-  if (err) {
-    console.log(err);
-    return res.status(400).json({ error: 'An error occurred' });
+const getNotes = (req, res) => {
+  let account = req.session.account._id;
+  if (req.query.author) {
+    account = req.query.author;
   }
-
-  return res.json({ notes: docs });
-});
-
-const getPublicNotes = (req, res) => {
-  return Note.NoteModel.find({ private: false }, 'title content createdData owner', (err, docs) => {
+  Note.NoteModel.findByOwner(account, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
@@ -63,7 +92,28 @@ const getPublicNotes = (req, res) => {
   });
 };
 
+const getPublicNotes = async (req, res) => {
+  const result = await queryNote(req, res);
+  if (result.error) {
+    console.log(result.error);
+    return res.status(400).json({ error: result.error });
+  }
+
+  return res.json(result);
+};
+
+const getNote = async (req, res) => {
+  if (!req.query.id) {
+    return { error: 'An id is required to look up a note' };
+  }
+
+  req.query.note = req.query.id;
+  const result = await queryNote(req, res);
+  return res.json(result);
+};
+
 module.exports.makerPage = makerPage;
 module.exports.getNotes = getNotes;
+module.exports.getNote = getNote;
 module.exports.getPublicNotes = getPublicNotes;
 module.exports.make = makeNote;

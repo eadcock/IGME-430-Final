@@ -21,4 +21,8 @@ const sendAjax = (type, action, data, success) => {
       handleError(messageObj.error);
     }
   })
-}
+};
+
+module.exports.handleError = handleError;
+module.exports.sendAjax = sendAjax;
+module.exports.redirect = redirect;

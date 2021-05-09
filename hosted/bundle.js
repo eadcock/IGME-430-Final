@@ -1,5 +1,7 @@
 "use strict";
 
+var _this = void 0;
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -7,6 +9,53 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _templateObject4() {
+  var data = _taggedTemplateLiteral(["ad{i}"]);
+
+  _templateObject4 = function _templateObject4() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject3() {
+  var data = _taggedTemplateLiteral(["ad{i}"]);
+
+  _templateObject3 = function _templateObject3() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject2() {
+  var data = _taggedTemplateLiteral(["ad{i}"]);
+
+  _templateObject2 = function _templateObject2() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject() {
+  var data = _taggedTemplateLiteral(["ad{i}"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
+}
+
+function _taggedTemplateLiteral(strings, raw) { if (!raw) { raw = strings.slice(0); } return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var _require = require('@tinymce/tinymce-react'),
+    Editor = _require.Editor;
+
+var showingCreateForm = false;
 
 var handleNote = function handleNote(e) {
   e.preventDefault();
@@ -24,9 +73,7 @@ var handleNote = function handleNote(e) {
 };
 
 var handleExitNote = function handleExitNote(e) {
-  ReactDOM.unmountComponentAtNode(document.querySelector('#noteExpanded'));
-  $('#noteExpanded').hide();
-  $('#notes').show();
+  loadNotesFromServer();
 };
 
 var NoteExpanded = function NoteExpanded(props) {
@@ -70,10 +117,21 @@ var NoteForm = function NoteForm(props) {
       htmlFor: "age"
     }, "Content: "), /*#__PURE__*/React.createElement("textarea", {
       id: "noteContent",
+      className: "tiny",
       name: "content",
-      rows: "4",
-      cols: "45",
       placeholder: "Note Content"
+    }), /*#__PURE__*/React.createElement(Editor, {
+      apiKey: "fudiy8fe4dx3fx3nl9nzj5rype6w5qxyddbeept35rjkwkx1",
+      initialValue: "<p>Initial content</p>",
+      init: {
+        height: 500,
+        menubar: false,
+        plugins: ['advlist autolink lists link image', 'charmap print preview anchor help', 'searchreplace visualblocks code', 'insertdatetime media table paste wordcount'],
+        toolbar: 'undo redo | formatselect | bold italic | \
+            alignleft aligncenter alignright | \
+            bullist numlist outdent indent | help'
+      },
+      onChange: _this.handleEditorChange
     }), /*#__PURE__*/React.createElement("input", {
       type: "hidden",
       name: "_csrf",
@@ -88,22 +146,20 @@ var NoteForm = function NoteForm(props) {
 
 var getAuthor = function getAuthor(id, callback) {
   sendAjax('GET', '/getUser', {
-    id: encodeURIComponent(id)
+    id: encodeURI(id)
   }, function (res) {
     callback(res);
   });
 };
 
 var DisplayNote = function DisplayNote(note) {
-  $('#notes').hide();
   getAuthor(note.owner, function (res) {
     console.log(res);
     ReactDOM.render( /*#__PURE__*/React.createElement(NoteExpanded, {
       note: note,
       account: res[note.owner]
-    }), document.querySelector('#noteExpanded'));
+    }), document.querySelector('#content'));
   });
-  $('#noteExpanded').show();
 };
 
 var NoteList = function NoteList(props) {
@@ -117,6 +173,7 @@ var NoteList = function NoteList(props) {
   }
 
   var noteNodes = props.notes.map(function (note) {
+    var preview = note.content.length > 60 ? note.content.slice(0, 61) + '...' : note.content;
     return (/*#__PURE__*/React.createElement("div", {
         key: note._id,
         className: "note",
@@ -131,11 +188,28 @@ var NoteList = function NoteList(props) {
         className: "noteTitle"
       }, " Title: ", note.title, " "), /*#__PURE__*/React.createElement("h3", {
         className: "noteContent"
-      }, " Preview: ", note.content, " "), /*#__PURE__*/React.createElement("h3", {
+      }, " Preview: ", preview, " "), /*#__PURE__*/React.createElement("h3", {
         className: "noteDate"
       }, " Created: ", new Date(note.createdData).toLocaleDateString("en-US")))
     );
   });
+
+  if (noteNodes.length < 5) {
+    noteNodes.push( /*#__PURE__*/React.createElement("div", {
+      key: $(_templateObject()),
+      className: "ad"
+    }, /*#__PURE__*/React.createElement("h2", null, "THIS COULD BE YOUR AD")));
+  } else {
+    for (var i = 1; i < noteNodes.length; i++) {
+      if (i % 5 === 0) {
+        noteNodes.splice(i, 0, /*#__PURE__*/React.createElement("div", {
+          key: $(_templateObject2()),
+          className: "ad"
+        }, /*#__PURE__*/React.createElement("h2", null, "THIS COULD BE YOUR AD")));
+      }
+    }
+  }
+
   return (/*#__PURE__*/React.createElement("div", {
       className: "noteList"
     }, noteNodes)
@@ -155,36 +229,55 @@ var PublicNoteList = function PublicNoteList(props) {
   }
 
   var noteNodes = props.notes.map(function (note, i) {
-    return (/*#__PURE__*/React.createElement("div", {
-        key: note._id,
-        className: "note",
-        onClick: function onClick(e) {
-          return DisplayNote(note);
-        }
-      }, /*#__PURE__*/React.createElement("img", {
-        src: "/assets/img/moleskine.svg",
-        alt: "notebook",
-        className: "notebook"
-      }), /*#__PURE__*/React.createElement("h3", {
-        className: "noteTitle"
-      }, " Title: ", note.title, " "), /*#__PURE__*/React.createElement("h3", {
-        className: "noteContent"
-      }, " Preview: ", note.content, " "), /*#__PURE__*/React.createElement("h3", {
-        className: "author"
-      }, " Author: ", props.authors[note.owner].username, " "))
-    );
+    var preview = note.content.length > 60 ? note.content.slice(0, 61) + '...' : note.content;
+    var content = /*#__PURE__*/React.createElement("div", {
+      key: note._id,
+      className: "note",
+      onClick: function onClick(e) {
+        return DisplayNote(note);
+      }
+    }, /*#__PURE__*/React.createElement("img", {
+      src: "/assets/img/moleskine.svg",
+      alt: "notebook",
+      className: "notebook"
+    }), /*#__PURE__*/React.createElement("h3", {
+      className: "noteTitle"
+    }, " Title: ", note.title, " "), /*#__PURE__*/React.createElement("h3", {
+      className: "noteContent"
+    }, " Preview: ", preview, " "), /*#__PURE__*/React.createElement("h3", {
+      className: "author"
+    }, " Author: ", props.authors[note.owner].username, " "));
+    return content;
   });
+
+  if (noteNodes.length < 5) {
+    noteNodes.push( /*#__PURE__*/React.createElement("div", {
+      key: $(_templateObject3()),
+      className: "ad"
+    }, /*#__PURE__*/React.createElement("h2", null, "THIS COULD BE YOUR AD")));
+  } else {
+    for (var i = 1; i < noteNodes.length; i++) {
+      if (i % 5 === 0) {
+        noteNodes.splice(i, 0, /*#__PURE__*/React.createElement("div", {
+          key: $(_templateObject4()),
+          className: "ad"
+        }, /*#__PURE__*/React.createElement("h2", null, "THIS COULD BE YOUR AD")));
+      }
+    }
+  }
+
   return (/*#__PURE__*/React.createElement("div", {
       className: "noteList"
     }, noteNodes)
   );
 };
 
-var loadNotesFromServer = function loadNotesFromServer() {
+var loadNotesFromServer = function loadNotesFromServer(callback) {
   sendAjax('GET', '/getNotes', null, function (data) {
     ReactDOM.render( /*#__PURE__*/React.createElement(NoteList, {
       notes: data.notes
-    }), document.querySelector('#notes'));
+    }), document.querySelector('#content'));
+    callback(data);
   });
 };
 
@@ -192,15 +285,26 @@ var setup = function setup(csrf) {
   $('#noteExpanded').hide();
   ReactDOM.render( /*#__PURE__*/React.createElement(NoteList, {
     notes: []
-  }), document.querySelector('#notes'));
+  }), document.querySelector('#content'));
   $('#noteForm').hide();
   $('#add').on('click', function () {
-    ReactDOM.render( /*#__PURE__*/React.createElement(NoteForm, {
-      csrf: csrf
-    }), document.querySelector('#makeNote'));
-    $('#noteForm').show();
+    if (showingCreateForm) {
+      loadNotesFromServer(function (_) {
+        $('#privateLink').hide();
+        $('#publicLink').show();
+        showingCreateForm = !showingCreateForm;
+      });
+    } else {
+      ReactDOM.render( /*#__PURE__*/React.createElement(NoteForm, {
+        csrf: csrf
+      }), document.querySelector('#content'));
+      $('#privateLink').show();
+      $('#publicLink').show();
+      showingCreateForm = !showingCreateForm;
+    }
   });
   $('#publicLink').on('click', function () {
+    showingCreateForm = false;
     sendAjax('GET', '/getPublicNotes', null, function (data) {
       console.log(_toConsumableArray(new Set(data.notes.map(function (e) {
         return e.owner;
@@ -211,19 +315,21 @@ var setup = function setup(csrf) {
         ReactDOM.render( /*#__PURE__*/React.createElement(PublicNoteList, {
           notes: data.notes,
           authors: authors
-        }), document.querySelector('#notes'));
+        }), document.querySelector('#content'));
       });
       $('#privateLink').show();
       $('#publicLink').hide();
     });
   });
   $('#privateLink').on('click', function () {
-    loadNotesFromServer();
-    $('#privateLink').hide();
-    $('#publicLink').show();
+    showingCreateForm = false;
+    loadNotesFromServer(function (_) {
+      $('#privateLink').hide();
+      $('#publicLink').show();
+    });
   });
   $('#privateLink').hide();
-  loadNotesFromServer();
+  loadNotesFromServer(function () {});
 };
 
 var getToken = function getToken() {

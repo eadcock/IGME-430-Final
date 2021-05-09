@@ -88,6 +88,7 @@ nav:nth-child(1) {
 #privateLink {
   cursor: pointer;
 }
+
 /* #endregion */
 
 /* #region  Forms */
@@ -140,13 +141,24 @@ nav:nth-child(1) {
 }
 
 #noteForm {
+  width: 70vw;
+  height: 70vh;
+  margin: 0 auto;
+  padding: 3px 2em 10px;
+  text-align: center;
+  box-shadow: 0 0 3px 3px var(--background-accent);
+  border-radius: 20px;
+
   display: flex;
   justify-content: center;
   align-items: baseline;
   align-content: center;
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
+}
+
+#noteform textarea {
+  width: 100%;
+  height: 70%;
+  flex-grow: 1;
 }
 
 #noteForm label {
@@ -214,7 +226,8 @@ nav:nth-child(1) {
   transform: rotate(330deg);
 }
 
-.note {
+.note,
+.ad {
   cursor: pointer;
   width: 95%;
   margin: 0 auto;
@@ -244,7 +257,7 @@ img.notebook {
   margin-top: 10px;
   float: left;
   --shadow-size: 4px;
-  box-shadow: 0 0 var(--shadow-size) var(--shadow-size) var(--highlight), inset 0 0 0  var(--shadow-size) var(--highlight);
+  box-shadow: 0 0 var(--shadow-size) var(--shadow-size) var(--highlight), inset 0 0 0 var(--shadow-size) var(--highlight);
 }
 
 h3.emptyNote {
@@ -278,6 +291,13 @@ h3.noteContent {
 
 /* #endregion */
 
+/* not add. i know, probably shouldn't have put these next to each other */
+.ad h2 {
+  color: var(--highlight);
+  font-size: 2em;
+  text-align: center;
+}
+
 #add {
   width: 75px;
   height: 75px;
@@ -295,6 +315,7 @@ h3.noteContent {
   transition: all 0.2s ease;
 }
 
+/* #region  note expanded */
 .noteExpanded {
   display: flex;
   flex-wrap: wrap;
@@ -313,6 +334,14 @@ h3.noteContent {
   font-size: 3em;
   color: var(--background-dark);
   margin-top: 0;
+}
+
+.noteExpanded .noteContent {
+  padding: 0 3em;
+  padding-top: 1em;
+  border-radius: 20px;
+  background-color: var(--foreground-dark);
+  color: var(--text);
 }
 
 .noteExpanded .noteContent,
@@ -348,3 +377,5 @@ h3.noteContent {
 #expandedExitHover:hover {
   z-index: 3;
 }
+
+/* #endregion */

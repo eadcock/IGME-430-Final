@@ -24,6 +24,9 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  premium: {
+    type: Boolean,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -34,6 +37,7 @@ AccountSchema.statics.toAPI = (doc) => {
   return {
     // _id is built into your mongo document and is guaranteed to be unique
     username: doc.username,
+    premium: doc.premium,
     _id: doc._id,
   };
 };

@@ -13,6 +13,8 @@ const router = (app) => {
   app.get('/', mid.requireSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('/getUser', mid.requireSecure, controllers.Account.getUser);
   app.get('/getPublicNotes', controllers.Note.getPublicNotes);
+  app.get('/premium', mid.requiresLogin, controllers.Account.premiumPage);
+  app.get('/note', controllers.Note.getNote);
 };
 
 module.exports = router;
